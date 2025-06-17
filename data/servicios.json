@@ -46,7 +46,7 @@
     "nombre": "Agua",
     "empresa": "Aysa",
     "metodo_pago": "Visa",
-    "url_pago": "https://portalweb.aysa.com.ar/index.html",
+    "url_pago": "https://portal.web.aysa.com.ar/index.html",
     "pagos": {
       "enero": false,
       "febrero": false,
