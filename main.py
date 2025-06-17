@@ -19,11 +19,9 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from PySide6.QtMultimedia import QSoundEffect
 
 DATA_FILE = os.path.join('data', 'servicios.json')
 BACKUP_FILE = os.path.join('data', 'servicios.json.bak')
-SOUND_FILE = os.path.join('sounds', 'pago.wav')
 
 MESES = [
     'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
@@ -53,9 +51,6 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('Pagos de Servicios e Impuestos')
         self.resize(1200, 600)
         self.servicios = cargar_datos()
-        self.sound = QSoundEffect()
-        if os.path.exists(SOUND_FILE):
-            self.sound.setSource(QUrl.fromLocalFile(SOUND_FILE))
         self.init_ui()
 
     def init_ui(self):
@@ -102,8 +97,6 @@ class MainWindow(QMainWindow):
                     self,
                     'Pago registrado',
                     f"¡Bien ahí, maestro! Ya pagaste {servicio['nombre']} de {mes}.")
-                if self.sound.source().isValid():
-                    self.sound.play()
         return handler
 
     def aplicar_modo_oscuro(self):
