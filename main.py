@@ -5,12 +5,10 @@ import webbrowser
 from datetime import datetime
 
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QPalette, QColor
+from PySide6.QtGui import QPalette, QColor, QFont
 from PySide6.QtWidgets import (
     QApplication,
-    QCheckBox,
-    QHBoxLayout,
-    QLabel,
+    QHeaderView,
     QMainWindow,
     QMessageBox,
     QPushButton,
@@ -49,8 +47,23 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Pagos de Servicios e Impuestos')
-        self.resize(1200, 600)
+        self.resize(1600, 600)
         self.servicios = cargar_datos()
+        self.estilo_boton_generico = (
+            "QPushButton {background-color: #2d2d2d; color: white; border: 1px solid #666; border-radius: 4px; padding: 5px;}"
+            "QPushButton:hover {background-color: #444444;}"
+            "QPushButton:pressed {background-color: #555555;}"
+        )
+        self.estilo_pagado = (
+            "QPushButton {background-color: #2ecc71; color: black; border-radius: 4px; padding: 5px;}"
+            "QPushButton:hover {background-color: #3eea85;}"
+            "QPushButton:pressed {background-color: #1fa05a;}"
+        )
+        self.estilo_no_pagado = (
+            "QPushButton {background-color: #555555; color: white; border-radius: 4px; padding: 5px;}"
+            "QPushButton:hover {background-color: #777777;}"
+            "QPushButton:pressed {background-color: #333333;}"
+        )
         self.init_ui()
 
     def init_ui(self):
@@ -60,7 +73,7 @@ class MainWindow(QMainWindow):
         self.table = QTableWidget(len(self.servicios), 4 + len(MESES))
         headers = ['Servicio', 'Empresa', 'Medio de pago', 'Ir a pagar'] + [m.capitalize() for m in MESES]
         self.table.setHorizontalHeaderLabels(headers)
-        current_month = datetime.now().month - 1
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
 
         for row, servicio in enumerate(self.servicios):
             self.table.setItem(row, 0, QTableWidgetItem(servicio['nombre']))
@@ -69,6 +82,7 @@ class MainWindow(QMainWindow):
 
             # boton ir a pagar
             btn_pago = QPushButton('Ir a pagar')
+            btn_pago.setStyleSheet(self.estilo_boton_generico)
             if servicio.get('url_pago'):
                 btn_pago.clicked.connect(lambda checked, url=servicio['url_pago']: webbrowser.open(url))
             else:
@@ -76,23 +90,32 @@ class MainWindow(QMainWindow):
             self.table.setCellWidget(row, 3, btn_pago)
 
             for i, mes in enumerate(MESES):
-                chk = QCheckBox()
-                chk.setChecked(servicio['pagos'].get(mes, False))
-                if i == current_month:
-                    chk.setStyleSheet('background-color: #444444;')
-                chk.stateChanged.connect(self.make_marcar_handler(row, mes))
-                self.table.setCellWidget(row, 4 + i, chk)
+                estado = servicio['pagos'].get(mes, False)
+                btn_estado = QPushButton()
+                self.actualizar_boton_pago(btn_estado, estado)
+                btn_estado.clicked.connect(self.make_marcar_handler(row, mes, btn_estado))
+                self.table.setCellWidget(row, 4 + i, btn_estado)
 
         layout.addWidget(self.table)
         self.setCentralWidget(widget)
         self.aplicar_modo_oscuro()
 
-    def make_marcar_handler(self, row, mes):
-        def handler(state):
+    def actualizar_boton_pago(self, boton, estado):
+        if estado:
+            boton.setText('Pagado')
+            boton.setStyleSheet(self.estilo_pagado)
+        else:
+            boton.setText('No pagué')
+            boton.setStyleSheet(self.estilo_no_pagado)
+
+    def make_marcar_handler(self, row, mes, button):
+        def handler():
             servicio = self.servicios[row]
-            servicio['pagos'][mes] = bool(state)
+            nuevo_estado = not servicio['pagos'].get(mes, False)
+            servicio['pagos'][mes] = nuevo_estado
             guardar_datos(self.servicios)
-            if state:
+            self.actualizar_boton_pago(button, nuevo_estado)
+            if nuevo_estado:
                 QMessageBox.information(
                     self,
                     'Pago registrado',
@@ -119,6 +142,8 @@ class MainWindow(QMainWindow):
 
 def main():
     app = QApplication(sys.argv)
+    font = QFont('Segoe UI', 11)
+    app.setFont(font)
     window = MainWindow()
     window.show()
     sys.exit(app.exec())
