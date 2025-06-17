@@ -1,0 +1,128 @@
+[
+  {
+    "id": 1,
+    "nombre": "Gas",
+    "empresa": "Naturgy",
+    "metodo_pago": "Visa",
+    "url_pago": "https://ov.naturgy.com.ar/",
+    "pagos": {
+      "enero": false,
+      "febrero": false,
+      "marzo": false,
+      "abril": false,
+      "mayo": false,
+      "junio": false,
+      "julio": false,
+      "agosto": false,
+      "septiembre": false,
+      "octubre": false,
+      "noviembre": false,
+      "diciembre": false
+    }
+  },
+  {
+    "id": 2,
+    "nombre": "Luz",
+    "empresa": "Edenor",
+    "metodo_pago": "App de MercadoPago",
+    "url_pago": null,
+    "pagos": {
+      "enero": false,
+      "febrero": false,
+      "marzo": false,
+      "abril": false,
+      "mayo": false,
+      "junio": false,
+      "julio": false,
+      "agosto": false,
+      "septiembre": false,
+      "octubre": false,
+      "noviembre": false,
+      "diciembre": false
+    }
+  },
+  {
+    "id": 3,
+    "nombre": "Agua",
+    "empresa": "Aysa",
+    "metodo_pago": "Visa",
+    "url_pago": "https://portalweb.aysa.com.ar/index.html",
+    "pagos": {
+      "enero": false,
+      "febrero": false,
+      "marzo": false,
+      "abril": false,
+      "mayo": false,
+      "junio": false,
+      "julio": false,
+      "agosto": false,
+      "septiembre": false,
+      "octubre": false,
+      "noviembre": false,
+      "diciembre": false
+    }
+  },
+  {
+    "id": 4,
+    "nombre": "Cable / Internet / Celular",
+    "empresa": "Personal / Flow / CelularLeo",
+    "metodo_pago": "Débito automático",
+    "url_pago": null,
+    "pagos": {
+      "enero": false,
+      "febrero": false,
+      "marzo": false,
+      "abril": false,
+      "mayo": false,
+      "junio": false,
+      "julio": false,
+      "agosto": false,
+      "septiembre": false,
+      "octubre": false,
+      "noviembre": false,
+      "diciembre": false
+    }
+  },
+  {
+    "id": 5,
+    "nombre": "Renta",
+    "empresa": "ARBA",
+    "metodo_pago": "Visa",
+    "url_pago": "https://www.arba.gov.ar/",
+    "pagos": {
+      "enero": false,
+      "febrero": false,
+      "marzo": false,
+      "abril": false,
+      "mayo": false,
+      "junio": false,
+      "julio": false,
+      "agosto": false,
+      "septiembre": false,
+      "octubre": false,
+      "noviembre": false,
+      "diciembre": false
+    }
+  },
+  {
+    "id": 6,
+    "nombre": "Aseo y Limpieza",
+    "empresa": "Tasa ALSMI",
+    "metodo_pago": "Visa",
+    "url_pago": "https://im.sanmartin.gov.ar/tasas-municipales/alsmi/",
+    "pagos": {
+      "enero": false,
+      "febrero": false,
+      "marzo": false,
+      "abril": false,
+      "mayo": false,
+      "junio": false,
+      "julio": false,
+      "agosto": false,
+      "septiembre": false,
+      "octubre": false,
+      "noviembre": false,
+      "diciembre": false
+    }
+  }
+]
