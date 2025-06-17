@@ -6,10 +6,10 @@ on:
       - '*'
   release:
     types: [created]
-    
+
 permissions:
   contents: write
-  
+
 jobs:
   build:
     runs-on: windows-latest
@@ -28,7 +28,8 @@ jobs:
 
       - name: Build executable
         run: |
-          pyinstaller --onefile --noconsole --add-data "data;data" --add-data "sounds;sounds" main.py
+
+          pyinstaller --onefile --noconsole --add-data "data;data" main.py
           move dist\main.exe ImpuestosPagosTracker.exe
 
       - name: Create ZIP
