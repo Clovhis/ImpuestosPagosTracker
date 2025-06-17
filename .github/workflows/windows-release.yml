@@ -28,6 +28,7 @@ jobs:
 
       - name: Build executable
         run: |
+
           pyinstaller --onefile --noconsole --add-data "data;data" main.py
           move dist\main.exe ImpuestosPagosTracker.exe
 
