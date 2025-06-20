@@ -1,0 +1,23 @@
+name: Build portable zip
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Prepare archive
+        run: |
+          mkdir build
+          cp -r main.py data requirements.txt README.md build/
+          cp -r assets ui build/
+          cd build
+          zip -r ../ImpuestosPagosTracker.zip .
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ImpuestosPagosTracker
+          path: ImpuestosPagosTracker.zip
