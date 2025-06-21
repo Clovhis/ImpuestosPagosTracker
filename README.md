@@ -18,15 +18,10 @@ pip install -r requirements.txt
 python main.py
 ```
 
-## Compilación
+## Empaquetado
 
-Para generar una versión portable se recomienda crear un directorio con el ejecutable y la carpeta `data`.
-Un ejemplo de comando es:
-
-```bash
-pyinstaller --noconsole main.py
-```
-
-Luego, comprime la carpeta `dist/main` junto con `data/` y distribuye ese archivo `.zip`. Así se incluyen todos los recursos necesarios para que la aplicación funcione sin instalar nada.
+La aplicación se distribuye en un archivo `.zip` que contiene todo el código y la carpeta `data`.
+Solo necesitas descomprimir ese archivo y ejecutar `python main.py` dentro de la carpeta resultante.
+El empaquetado se genera automáticamente mediante GitHub Actions.
 
 Los datos se almacenan en `data/servicios.json` y se realiza un backup automático `servicios.json.bak` al guardar.

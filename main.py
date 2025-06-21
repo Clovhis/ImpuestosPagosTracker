@@ -9,12 +9,13 @@ from PySide6.QtGui import QPalette, QColor, QFont
 from PySide6.QtWidgets import (
     QApplication,
     QHeaderView,
+    QLabel,
     QMainWindow,
-    QMessageBox,
     QPushButton,
     QTableWidget,
     QTableWidgetItem,
     QVBoxLayout,
+    QGridLayout,
     QWidget,
 )
 
@@ -70,15 +71,16 @@ class MainWindow(QMainWindow):
         widget = QWidget()
         layout = QVBoxLayout(widget)
 
-        self.table = QTableWidget(len(self.servicios), 4 + len(MESES))
-        headers = ['Servicio', 'Empresa', 'Medio de pago', 'Ir a pagar'] + [m.capitalize() for m in MESES]
+        self.table = QTableWidget(len(self.servicios), 5 + len(MESES))
+        headers = ['Servicio', 'Empresa', 'Cómo se paga', 'Con qué pago', 'Ir a pagar'] + [m.capitalize() for m in MESES]
         self.table.setHorizontalHeaderLabels(headers)
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
 
         for row, servicio in enumerate(self.servicios):
             self.table.setItem(row, 0, QTableWidgetItem(servicio['nombre']))
             self.table.setItem(row, 1, QTableWidgetItem(servicio['empresa']))
-            self.table.setItem(row, 2, QTableWidgetItem(servicio['metodo_pago']))
+            self.table.setItem(row, 2, QTableWidgetItem(servicio.get('como_pagar', '')))
+            self.table.setItem(row, 3, QTableWidgetItem(servicio.get('con_que_pago', '')))
 
             # boton ir a pagar
             btn_pago = QPushButton('Ir a pagar')
@@ -87,16 +89,17 @@ class MainWindow(QMainWindow):
                 btn_pago.clicked.connect(lambda checked, url=servicio['url_pago']: webbrowser.open(url))
             else:
                 btn_pago.setEnabled(False)
-            self.table.setCellWidget(row, 3, btn_pago)
+            self.table.setCellWidget(row, 4, btn_pago)
 
             for i, mes in enumerate(MESES):
                 estado = servicio['pagos'].get(mes, False)
                 btn_estado = QPushButton()
                 self.actualizar_boton_pago(btn_estado, estado)
                 btn_estado.clicked.connect(self.make_marcar_handler(row, mes, btn_estado))
-                self.table.setCellWidget(row, 4 + i, btn_estado)
+                self.table.setCellWidget(row, 5 + i, btn_estado)
 
         layout.addWidget(self.table)
+        self.agregar_info_arba(layout)
         self.setCentralWidget(widget)
         self.aplicar_modo_oscuro()
 
@@ -115,12 +118,29 @@ class MainWindow(QMainWindow):
             servicio['pagos'][mes] = nuevo_estado
             guardar_datos(self.servicios)
             self.actualizar_boton_pago(button, nuevo_estado)
-            if nuevo_estado:
-                QMessageBox.information(
-                    self,
-                    'Pago registrado',
-                    f"¡Bien ahí, maestro! Ya pagaste {servicio['nombre']} de {mes}.")
+            # pequeña animación o feedback visual podría agregarse aquí
         return handler
+
+    def copiar_al_portapapeles(self, texto):
+        QApplication.clipboard().setText(texto)
+
+    def agregar_info_arba(self, layout):
+        info = [
+            ("Partida - Leo/Naty:", "047 - 098287"),
+            ("Partida - Reina:", "110 - 004573"),
+            ("Partida - Graciela:", "110 - 056763"),
+            ("Partida - Silvana:", "097 - 082018"),
+        ]
+        layout.addWidget(QLabel("ARBA"))
+        info_widget = QWidget()
+        grid = QGridLayout(info_widget)
+        for row, (label_text, numero) in enumerate(info):
+            grid.addWidget(QLabel(label_text), row, 0)
+            btn = QPushButton(numero)
+            btn.setStyleSheet(self.estilo_boton_generico)
+            btn.clicked.connect(lambda checked, n=numero: self.copiar_al_portapapeles(n))
+            grid.addWidget(btn, row, 1)
+        layout.addWidget(info_widget)
 
     def aplicar_modo_oscuro(self):
         palette = QPalette()
