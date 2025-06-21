@@ -17,6 +17,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QGridLayout,
     QWidget,
+    QMessageBox,
 )
 
 DATA_FILE = os.path.join('data', 'servicios.json')
@@ -100,6 +101,16 @@ class MainWindow(QMainWindow):
 
         layout.addWidget(self.table)
         self.agregar_info_arba(layout)
+
+        reset_btn = QPushButton('Reset año')
+        reset_btn.setStyleSheet(
+            "QPushButton {background-color: red; color: white; border-radius: 4px; padding: 5px;}"
+            "QPushButton:hover {background-color: #ff5555;}"
+            "QPushButton:pressed {background-color: #aa0000;}"
+        )
+        reset_btn.clicked.connect(self.reset_anio)
+        layout.addWidget(reset_btn, alignment=Qt.AlignRight)
+
         self.setCentralWidget(widget)
         self.aplicar_modo_oscuro()
 
@@ -138,9 +149,27 @@ class MainWindow(QMainWindow):
             grid.addWidget(QLabel(label_text), row, 0)
             btn = QPushButton(numero)
             btn.setStyleSheet(self.estilo_boton_generico)
-            btn.clicked.connect(lambda checked, n=numero: self.copiar_al_portapapeles(n))
+            solo_numero = numero.split('-')[-1].strip()
+            btn.clicked.connect(lambda checked, n=solo_numero: self.copiar_al_portapapeles(n))
             grid.addWidget(btn, row, 1)
         layout.addWidget(info_widget)
+
+    def reset_anio(self):
+        reply = QMessageBox.question(
+            self,
+            'Confirmar reset',
+            '¿Seguro que deseas resetear todos los pagos del año?',
+            QMessageBox.Yes | QMessageBox.No,
+        )
+        if reply == QMessageBox.Yes:
+            for row, servicio in enumerate(self.servicios):
+                for mes in MESES:
+                    servicio['pagos'][mes] = False
+                for i, _ in enumerate(MESES):
+                    btn = self.table.cellWidget(row, 5 + i)
+                    if btn:
+                        self.actualizar_boton_pago(btn, False)
+            guardar_datos(self.servicios)
 
     def aplicar_modo_oscuro(self):
         palette = QPalette()
@@ -165,7 +194,7 @@ def main():
     font = QFont('Segoe UI', 11)
     app.setFont(font)
     window = MainWindow()
-    window.show()
+    window.showMaximized()
     sys.exit(app.exec())
 
 
