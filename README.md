@@ -1,27 +1,27 @@
-# ImpuestosPagosTracker
+# Impuestos Tracker · 2026
 
-Aplicación de escritorio en Python para llevar el control mensual de tus servicios e impuestos.
+Aplicación de escritorio para Windows 11 que permite llevar un registro local
+de servicios e impuestos pagados, mes a mes.
 
-## Requisitos
+La edición 2026 transforma la tabla tradicional en un tablero oscuro de alto
+contraste: progreso anual, foco en el mes actual, tarjetas por servicio,
+confirmación sonora opcional y accesos rápidos a partidas de ARBA.
 
-- Python 3.9+
-- Dependencias en `requirements.txt`
+## Ejecutar
 
-Instalación de dependencias:
+Requiere Python 3.9 o superior.
+
 ```bash
 pip install -r requirements.txt
-```
-
-## Ejecución
-
-```bash
 python main.py
 ```
 
-## Empaquetado
+## Datos y seguridad
 
-La aplicación se distribuye en un archivo `.zip` que contiene todo el código y la carpeta `data`.
-Solo necesitas descomprimir ese archivo y ejecutar `python main.py` dentro de la carpeta resultante.
-El empaquetado se genera automáticamente mediante GitHub Actions.
+- Los datos permanecen en `data/servicios.json`.
+- Cada cambio se guarda en el momento.
+- Antes de guardar se crea `data/servicios.json.bak`.
+- El archivo se reemplaza de manera atómica para evitar archivos JSON truncados.
 
-Los datos se almacenan en `data/servicios.json` y se realiza un backup automático `servicios.json.bak` al guardar.
+La app no necesita conexión para funcionar; solo se abre el navegador al usar
+un enlace de pago configurado.
