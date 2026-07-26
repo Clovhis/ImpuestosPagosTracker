@@ -267,7 +267,6 @@ class ServiceCard(QFrame):
 
     def on_month_toggled(self, month, paid):
         self.service["pagos"][month] = paid
-        guardar_datos(self.parent_window().servicios)
         self.refresh_counter()
         self.changed.emit()
 
@@ -484,6 +483,15 @@ class MainWindow(QMainWindow):
         self.pending_stat.detail_widget.setText("servicios pendientes este mes")
 
     def on_payment_changed(self):
+        try:
+            guardar_datos(self.servicios)
+        except OSError as error:
+            QMessageBox.critical(
+                self,
+                "No se pudo guardar",
+                f"No se pudo actualizar el archivo de datos.\n\n{error}",
+            )
+            return
         self.refresh_dashboard()
         self.play_feedback(success=True)
         self.toast.show_message("✓ Pago actualizado y guardado")
