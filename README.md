@@ -18,7 +18,9 @@ python main.py
 
 ## Datos y seguridad
 
-- Los datos permanecen en `data/servicios.json`.
+- Los datos permanecen en `data/servicios.json` junto al ejecutable de Windows.
+  El primer inicio crea ese archivo desde la plantilla incluida; las
+  actualizaciones posteriores nunca sobrescriben tus pagos.
 - Cada cambio se guarda en el momento.
 - Antes de guardar se crea `data/servicios.json.bak`.
 - El archivo se reemplaza de manera atómica para evitar archivos JSON truncados.

@@ -7,6 +7,7 @@ experiencia y endurece el guardado para que sea más difícil perder cambios.
 
 import json
 import os
+import shutil
 import sys
 import webbrowser
 from datetime import datetime
@@ -34,8 +35,29 @@ from PySide6.QtWidgets import (
 
 
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_FILE = os.path.join(APP_DIR, "data", "servicios.json")
-BACKUP_FILE = os.path.join(APP_DIR, "data", "servicios.json.bak")
+
+
+def resolver_rutas_datos():
+    """Devuelve los archivos de datos y la plantilla incluida en el ejecutable.
+
+    PyInstaller extrae los recursos de un ejecutable ``--onefile`` a una carpeta
+    temporal (``_MEIPASS``). Esa carpeta desaparece al cerrar la app, por lo que
+    nunca debe usarse para guardar datos del usuario. En el ejecutable se guarda
+    junto a él; durante desarrollo se conserva la carpeta ``data`` del repo.
+    """
+    if getattr(sys, "frozen", False):
+        resource_dir = getattr(sys, "_MEIPASS", APP_DIR)
+        writable_dir = os.path.dirname(sys.executable)
+    else:
+        resource_dir = APP_DIR
+        writable_dir = APP_DIR
+    source = os.path.join(resource_dir, "data", "servicios.json")
+    destination_dir = os.path.join(writable_dir, "data")
+    destination = os.path.join(destination_dir, "servicios.json")
+    return destination, os.path.join(destination_dir, "servicios.json.bak"), source
+
+
+DATA_FILE, BACKUP_FILE, SEED_DATA_FILE = resolver_rutas_datos()
 
 MESES = [
     "enero", "febrero", "marzo", "abril", "mayo", "junio",
@@ -55,7 +77,12 @@ ICONS = {
 def cargar_datos():
     """Carga y normaliza datos de instalaciones de versiones anteriores."""
     if not os.path.exists(DATA_FILE):
-        return []
+        # En el primer inicio del .exe, usa la plantilla incluida por PyInstaller.
+        # Nunca pisa un archivo existente: las actualizaciones preservan tus pagos.
+        if not os.path.exists(SEED_DATA_FILE):
+            return []
+        os.makedirs(os.path.dirname(DATA_FILE), exist_ok=True)
+        shutil.copy2(SEED_DATA_FILE, DATA_FILE)
     with open(DATA_FILE, "r", encoding="utf-8") as archivo:
         servicios = json.load(archivo)
     for servicio in servicios:
